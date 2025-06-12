@@ -1,9 +1,10 @@
 #!/bin/bash
 
 #SBATCH --job-name=sleeping
-#SBATCH --time=24:00
+##SBATCH --time=24:00
 #SBATCH --ntasks=1
 #SBATCH -c 1
+#SBATCH -p smp
 #SBATCH --mem=150G
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
