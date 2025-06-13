@@ -4,7 +4,7 @@
 ##SBATCH --time=24:00
 ##SBATCH --ntasks=1
 ##SBATCH -c 1
-#SBATCH --mem-per-cpu=32
+##SBATCH --mem-per-cpu=32
 #SBATCH -p long
 #SBATCH --mem=300G
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
