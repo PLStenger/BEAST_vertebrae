@@ -6,7 +6,7 @@
 ##SBATCH -c 1
 #SBATCH --mem-per-cpu=32
 #SBATCH -p long
-#SBATCH --mem=200G
+#SBATCH --mem=400G
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
 #SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment.err"
@@ -24,7 +24,7 @@
 cd /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 
 # Publication: https://peerj.com/articles/1660/
-python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment.fa
+python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 32
 
 
 
