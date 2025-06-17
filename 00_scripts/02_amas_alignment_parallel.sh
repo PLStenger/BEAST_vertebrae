@@ -6,7 +6,7 @@
 ##SBATCH -c 1
 ##SBATCH --mem-per-cpu=32
 #SBATCH -p long
-#SBATCH --mem=400G
+#SBATCH --mem=300G
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
 #SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment.err"
