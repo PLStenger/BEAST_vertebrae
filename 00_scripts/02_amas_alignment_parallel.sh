@@ -2,11 +2,11 @@
 
 #SBATCH --job-name=beast_alignment
 ##SBATCH --time=24:00
-##SBATCH --ntasks=1
-##SBATCH -c 1
-#SBATCH --mem-per-cpu=32
-#SBATCH -p smp
-#SBATCH --mem=400G
+#SBATCH --ntasks=1
+#SBATCH -p gdec
+#SBATCH --nodelist=gdecnode02
+#SBATCH --mem=500G
+#SBATCH -c 32
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
 #SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_parallel.err"
