@@ -3,9 +3,9 @@
 #SBATCH --job-name=beast_alignment
 ##SBATCH --time=24:00
 #SBATCH --ntasks=1
-#SBATCH -p gdec
-#SBATCH --nodelist=gdecnode02
-#SBATCH --mem=450G
+#SBATCH -p fast
+#SBATCH --nodelist=hpcnode27
+##SBATCH --mem=450G
 #SBATCH -c 32
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
