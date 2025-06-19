@@ -21,12 +21,29 @@
 #python3 -m pip install --user git+https://github.com/marekborowiec/AMAS.git
 
 
-cd /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
+INPUT=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 
+WORKDIR=/storage/scratch/login/XXYYZZ
+mkdir -p $WORKDIR
+mkdir -p $WORKDIR/input
+mkdir -p $WORKDIR/output
+mkdir -p $WORKDIR/tmp
+
+module load rclone/1.55.1
+# Les données sont copiées dans le `scratch`
+rclone copy s3-myproject:monBucket$INPUT $WORKDIR/input/
+cd $WORKDIR
+
+# Exécution du job. Les données créées sont également copiées dans le `scratch`
 # Publication: https://peerj.com/articles/1660/
-python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 32
+python3 -m amas.AMAS concat -i $WORKDIR/input/*.fa -f fasta -d aa -u fasta -t $WORKDIR/output/concatenated_alignment_parallel.fa -c 32  --temporary-directory=$WORKDIR/tmp
 
+# Transfert des données produites dans l'espace de stockage S3
+rclone copy $WORKDIR/output s3-myproject:monBucket$INPUT
 
+# Nettoyage du `scratch` pour une remise à disposition de l'espace aux autres utilisateurs
+cd /tmp
+rm -rf $WORKDIR
 
 #Points importants
 #Vérifie que les noms des séquences sont cohérents entre fichiers (même nom pour la même espèce partout).
