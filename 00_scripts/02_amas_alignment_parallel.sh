@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #SBATCH --job-name=beast_alignment
-##SBATCH --time=24:00
+##SBATCH --time=12:00:00
 #SBATCH --ntasks=1
+#SBATCH -c 32
 #SBATCH -p smp
-##SBATCH --nodelist=gdecnode02
-#SBATCH --mem=1000G
-##SBATCH -c 32
+#SBATCH --mem=512G
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
 #SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_parallel.err"
 #SBATCH --output="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_parallel.out"
+
 
 # BEAST attend un seul alignement, c’est-à-dire que toutes les séquences doivent être alignées les unes par rapport aux autres (mêmes espèces, mêmes positions).
 # Concaténer les alignements revient à créer une supermatrice : pour chaque espèce, tu concatènes ses séquences alignées pour chaque OG, en respectant l’ordre des OG.
@@ -22,7 +22,17 @@
 
 cd /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 
-python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 32
+#python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 32
+#python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 16
+
+# Diagnostic mémoire/temps
+/usr/bin/time -v python3 -m amas.AMAS concat \
+    -i *.fa \
+    -f fasta \
+    -d aa \
+    -u fasta \
+    -t concatenated_alignment_parallel.fa \
+    -c 32
 
 #INPUT=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 
