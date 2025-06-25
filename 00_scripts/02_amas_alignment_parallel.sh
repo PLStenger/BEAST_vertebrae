@@ -26,6 +26,7 @@ cd /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 #python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 16
 
 # Méthode par lots car out of memory sinon
+# Étape 1 : Concaténation par lots
 mkdir -p batches
 ls *.fa | split -l 500 - batches/
 
@@ -33,6 +34,7 @@ for batch in batches/*; do
     python3 -m amas.AMAS concat -i $(cat $batch) -f fasta -d aa -u fasta -t "${batch}.fa" -c 8
 done
 
+# Étape 2 : Fusion des lots
 /usr/bin/time -v python3 -m amas.AMAS concat -i batches/*.fa -f fasta -d aa -u fasta -t concatenated_alignment.fa -c 8
 
 # Diagnostic mémoire/temps
