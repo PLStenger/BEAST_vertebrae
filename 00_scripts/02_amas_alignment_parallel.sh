@@ -3,9 +3,9 @@
 #SBATCH --job-name=beast_alignment
 ##SBATCH --time=12:00:00
 #SBATCH --ntasks=1
-#SBATCH -c 32
+#SBATCH -c 8
 #SBATCH -p smp
-#SBATCH --mem=512G
+#SBATCH --mem=1000G
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
 #SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_parallel.err"
@@ -25,14 +25,24 @@ cd /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 #python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 32
 #python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 16
 
+# Méthode par lots car out of memory sinon
+mkdir -p batches
+ls *.fa | split -l 500 - batches/
+
+for batch in batches/*; do
+    python3 -m amas.AMAS concat -i $(cat $batch) -f fasta -d aa -u fasta -t "${batch}.fa" -c 8
+done
+
+/usr/bin/time -v python3 -m amas.AMAS concat -i batches/*.fa -f fasta -d aa -u fasta -t concatenated_alignment.fa -c 8
+
 # Diagnostic mémoire/temps
-/usr/bin/time -v python3 -m amas.AMAS concat \
-    -i *.fa \
-    -f fasta \
-    -d aa \
-    -u fasta \
-    -t concatenated_alignment_parallel.fa \
-    -c 32
+#/usr/bin/time -v python3 -m amas.AMAS concat \
+#    -i *.fa \
+#    -f fasta \
+#    -d aa \
+#    -u fasta \
+#    -t concatenated_alignment_parallel.fa \
+#    -c 8
 
 #INPUT=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 
