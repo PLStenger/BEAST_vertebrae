@@ -1,5 +1,3 @@
-source ~/myenv/bin/activate
-
 import csv
 import os
 from Bio import AlignIO
