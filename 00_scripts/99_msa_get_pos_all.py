@@ -21,7 +21,7 @@ def process_alignment_file(filename):
         
         # FIXED: Split into two lines to avoid syntax issues
         base_name = os.path.splitext(filename)[0]
-        output_filename = f"{base_name}_amino_acid_positions.csv"
+        output_filename = base_name + "_amino_acid_positions.csv"
         
         output_path = os.path.join(alignment_file_path, output_filename)
 
