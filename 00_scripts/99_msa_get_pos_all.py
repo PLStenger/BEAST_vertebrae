@@ -68,5 +68,5 @@ if failed_files:
 
 # Summary of processing
 print("\nProcessing Summary:")
-print(f"Successfully processed files: {successful_files}")
-print(f"Failed files: {failed_files}")
+print("Successfully processed files: {}".format(successful_files))
+print("Failed files: {}".format(failed_files))
