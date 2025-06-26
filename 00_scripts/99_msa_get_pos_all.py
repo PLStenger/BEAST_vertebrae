@@ -18,11 +18,11 @@ failed_files = []
 def process_alignment_file(filename):
     try:
         # Load the alignment file
-        alignment = AlignIO.read(os.path.join(alignment_file_path, filename), "fasta")  # Change format if necessary
+        alignment = AlignIO.read(os.path.join(alignment_file_path, filename), "fasta")  
 
         # Create a unique output filename
-        output_filename = f"{os.path.splitext(filename)[0]}_amino_acid_positions.csv"  # Use os.path.splitext to get the name without extension
-        output_path = os.path.join(alignment_file_path, output_filename)  # Full path for output
+        output_filename = f"{os.path.splitext(filename)[0]}_amino_acid_positions.csv" 
+        output_path = os.path.join(alignment_file_path, output_filename)  
 
         # Check if output file already exists and modify the name if necessary
         counter = 1
