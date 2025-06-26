@@ -3,8 +3,8 @@ import os
 from Bio import AlignIO
 
 # Define the paths
-alignment_file_path = "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data"
-file_list_path = "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/Orthogroup_3349.csv"
+alignment_file_path = "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/MultipleSequenceAlignments"
+file_list_path = "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_raw_data/Orthogroup_3349.csv"
 
 # List to keep track of processed files
 successful_files = []
