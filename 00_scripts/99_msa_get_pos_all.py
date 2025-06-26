@@ -19,10 +19,8 @@ def process_alignment_file(filename):
     try:
         alignment = AlignIO.read(os.path.join(alignment_file_path, filename), "fasta")
         
-        # FIXED: Split into two lines to avoid syntax issues
-       base_name = os.path.splitext(filename)[0]
-       output_filename = "{}_amino_acid_positions.csv".format(base_name)
-        
+        base_name = os.path.splitext(filename)[0]
+        output_filename = "{}_amino_acid_positions.csv".format(base_name)
         output_path = os.path.join(alignment_file_path, output_filename)
 
         # Check if output file already exists and modify the name if necessary
@@ -47,11 +45,11 @@ def process_alignment_file(filename):
                     row.append(amino_acid)
                 writer.writerow(row)
 
-        print(f"Output saved to {output_path}")
+        print("Output saved to {}".format(output_path))
         successful_files.append(filename)  # Add to successful list
 
     except Exception as e:
-        print(f"Error processing {filename}: {e}")
+        print("Error processing {}: {}".format(filename, e))
         failed_files.append(filename)  # Add to failed list
 
 # Read the list of alignment files from the specified text file
