@@ -3,11 +3,12 @@ import os
 from Bio import AlignIO
 
 # Define the paths
-
-# MultipleSequenceAlignments:
 alignment_file_path = "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data"
-# 
-file_list_path = "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/Orthogroup_3349.csv"  
+file_list_path = "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/Orthogroup_3349.csv"
+
+# List to keep track of processed files
+successful_files = []
+failed_files = [] 
 
 # List to keep track of processed files
 successful_files = []
