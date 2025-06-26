@@ -20,15 +20,15 @@ def process_alignment_file(filename):
         alignment = AlignIO.read(os.path.join(alignment_file_path, filename), "fasta")
         
         # FIXED: Split into two lines to avoid syntax issues
-        base_name = os.path.splitext(filename)[0]
-        output_filename = base_name + "_amino_acid_positions.csv"
+       base_name = os.path.splitext(filename)[0]
+       output_filename = "{}_amino_acid_positions.csv".format(base_name)
         
         output_path = os.path.join(alignment_file_path, output_filename)
 
         # Check if output file already exists and modify the name if necessary
         counter = 1
         while os.path.exists(output_path):
-            output_filename = f"{os.path.splitext(filename)[0]}_amino_acid_positions_{counter}.csv"
+            output_filename = "{0}_amino_acid_positions_{1}.csv".format(os.path.splitext(filename)[0], counter)
             output_path = os.path.join(alignment_file_path, output_filename)
             counter += 1
 
