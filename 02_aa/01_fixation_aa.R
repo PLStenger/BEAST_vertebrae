@@ -67,14 +67,6 @@ process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
   return(result)
 }
 
-
-
-
-data <- read.table("/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/02_aa/OG_count_counts_G1G2_metatheriens_summed.tsv", sep = '\t', header = TRUE)
-dim(data)
-#path <- "~/Documents/INRAE_PaleoLab/05_Vertebrae/05_fixation_aa/test/"
-path <- "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/MultipleSequenceAlignments/"
-
 G2 = c("Acipenser_ruthenus",
        "Polyodon_spathula",
        "Anabas_testudineus",
@@ -354,9 +346,23 @@ G1 = c("Balaenoptera_musculus",
 
 LifeTraits = c(G1, G2)
 
+data <- read.table("/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/02_aa/OG_count_counts_G1G2_metatheriens_summed.tsv", sep = '\t', header = TRUE)
+dim(data)
+#path <- "~/Documents/INRAE_PaleoLab/05_Vertebrae/05_fixation_aa/test/"
+path <- "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/MultipleSequenceAlignments/"
+
+# Read the file
+aa_file <- paste0(path, OGid, "_amino_acid_positions.csv")
+OG.aa <- read.csv(aa_file)
+
+
 ########################################################################################################
 # for whole dataset
 # Loop through each Orthogroup from 8001 to the end
+
+# Initialize an empty list to store results
+results_list <- list()
+
 for (i in 1:length(data$Orthogroup)) {
   # Define the Orthogroup to target
   OGid <- data$Orthogroup[i]
