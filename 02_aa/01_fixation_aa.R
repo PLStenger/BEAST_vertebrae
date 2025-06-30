@@ -8,32 +8,53 @@ save.image(file = "workspace_fixation_aa.RData")
 
 
 process_aa_data <- function(OG.aa, LifeTraits, G1) {
-  OG.aa.tr <- OG.aa %>% data.table::transpose(keep.names = "ID", make.names = "Position") %>%
-    mutate(Species = ifelse(grepl("_", ID), sub("_.*", "", ID), ID), .after = ID) %>% 
+  # Transposition et ajout de Species et Group
+  OG.aa.tr <- OG.aa %>% 
+    data.table::transpose(keep.names = "ID", make.names = "Position") %>%
+    mutate(
+      Species = ifelse(grepl("_", ID), sub("_.*", "", ID), ID),
+      .after = ID
+    ) %>% 
     filter(Species %in% LifeTraits) %>% 
     arrange(match(Species, LifeTraits)) %>% 
-    mutate(Group= ifelse(Species %in% G1, 'G1', 'G2'), .after = Species) %>%
-    select(ID:Group, everything()) %>%
-    # Remove aa with 50% NA
+    mutate(
+      Group = ifelse(Species %in% G1, 'G1', 'G2'),
+      .after = Species
+    ) %>%
+    select(ID:Group, everything())
+
+  # Suppression des colonnes avec trop de NA ou peu de valeurs
+  OG.aa.tr <- OG.aa.tr %>%
     select(-which(colMeans(. == "-") >= 0.5 & !(1:ncol(.) %in% 1:3))) %>%
-    # Remove columns with less than 2 different values (excluding specific strings)
     select(where(~ {
-      # Get unique character values excluding "-", "*", and "."
       unique_values <- unique(.)[!unique(.) %in% c("-", "*", ".")]
-      length(unique_values) >= 2  # Check for at least 2 different values
-    })) %>%
-    #Pivot longer
-    pivot_longer(cols = everything()[-(1:3)], names_to = "Pos", values_to = "AA") %>%
+      length(unique_values) >= 2
+    }))
+
+  # Vérification avant pivot_longer
+  if (ncol(OG.aa.tr) <= 3) {
+    message("Aucune colonne à pivoter après filtrage pour ", OGid)
+    return(NULL)
+  }
+
+  # Pivot longer
+  OG.aa.tr <- OG.aa.tr %>%
+    pivot_longer(
+      cols = everything()[-(1:3)],
+      names_to = "Pos",
+      values_to = "AA"
+    ) %>%
     mutate(Pos = as.numeric(Pos)) %>% 
     group_by(Group, Pos, AA) %>%
     summarize(
-      Count = n(),  # Count of rows
-      Species = n_distinct(Species),  # Count of unique species
-      .groups = 'drop') %>% 
+      Count = n(),
+      Species = n_distinct(Species),
+      .groups = 'drop'
+    ) %>% 
     arrange(Pos, AA) %>% 
     filter(!str_detect(AA, "[-*\\.]")) %>% 
-    mutate(Orthogroup=OGid, .after = Group)
-  
+    mutate(Orthogroup = OGid, .after = Group)
+
   return(OG.aa.tr)
 }
 
