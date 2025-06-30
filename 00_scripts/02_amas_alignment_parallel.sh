@@ -1,16 +1,15 @@
 #!/bin/bash
 
 #SBATCH --job-name=beast_alignment
-##SBATCH --time=12:00:00
+#SBATCH --time=96:00:00       
 #SBATCH --ntasks=1
-#SBATCH -c 8
+#SBATCH --cpus-per-task=8     
 #SBATCH -p smp
-#SBATCH --mem=1000G
+#SBATCH --mem=1000G            
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
 #SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_parallel.err"
 #SBATCH --output="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_parallel.out"
-
 
 # BEAST attend un seul alignement, c’est-à-dire que toutes les séquences doivent être alignées les unes par rapport aux autres (mêmes espèces, mêmes positions).
 # Concaténer les alignements revient à créer une supermatrice : pour chaque espèce, tu concatènes ses séquences alignées pour chaque OG, en respectant l’ordre des OG.
@@ -26,17 +25,21 @@ cd /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 #python3 -m amas.AMAS concat -i *.fa -f fasta -d aa -u fasta -t concatenated_alignment_parallel.fa -c 16
 
 # Méthode par lots car out of memory sinon
-# Étape 1 : Concaténation par lots
+# Création des lots
 mkdir -p batches
 ls *.fa | split -l 500 - batches/
 
+# Traitement par lot avec partitions uniques
 for batch in batches/*; do
-    python3 -m amas.AMAS concat -i $(cat $batch) -f fasta -d aa -u fasta -t "${batch}.fa" -c 8
+    python3 -m amas.AMAS concat -i $(cat $batch) -f fasta -d aa -u fasta \
+             -t "${batch}.fa" \
+             -p "${batch}_partitions.txt" \  # Fichier unique par lot
+             -c 8
 done
 
-# Étape 2 : Fusion des lots
-/usr/bin/time -v python3 -m amas.AMAS concat -i batches/*.fa -f fasta -d aa -u fasta -t concatenated_alignment.fa -c 8
-
+# Fusion finale sans charge mémoire
+cat batches/*.fa > concatenated_alignment.fa
+cat batches/*_partitions.txt > partitions.txt
 # Diagnostic mémoire/temps
 #/usr/bin/time -v python3 -m amas.AMAS concat \
 #    -i *.fa \
