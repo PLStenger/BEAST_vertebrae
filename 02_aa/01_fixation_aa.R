@@ -352,6 +352,9 @@ path <- "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/MultipleSequ
 # for whole dataset
 # Loop through each Orthogroup from 8001 to the end
 
+log_con <- file("erreurs_fixation_aa.log", open = "wt")
+sink(log_con, type = "message")
+
 # Initialize an empty list to store results
 results_list <- list()
 
@@ -408,16 +411,20 @@ for (i in seq_along(data$Orthogroup)) {
   }
 }
 
+sink(type = "message")
+close(log_con)
 
 # Combine all results into a single data frame, filtering out NULLs
 final_results <- do.call(rbind, results_list)
+print(dim(final_results))
+str(final_results)
 
 save(G1, G2,final_results, file = "resultats_fixation_aa.RData")
 
 # Optionally, print the final results
 dim(final_results)
 
-write(final_results, "final_results.txt")
+write.table(final_results, "final_results.txt", sep = "\t", row.names = FALSE, quote = FALSE)
 
 woodherb.cbd.aa <- final_results
 max((woodherb.cbd.aa %>% filter(Group=="G1"))$Species)
