@@ -7,65 +7,36 @@ library(stringr)
 save.image(file = "workspace_fixation_aa.RData")
 
 
-process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
-  # Convertir en format long directement
-  OG.aa.long <- OG.aa %>%
-    gather(key = "ID", value = "AA", -Position) %>%
-    mutate(
-      Species = ifelse(grepl("_", ID), sub("_.*", "", ID), ID),
-      .after = ID
-    ) %>%
-    filter(Species %in% LifeTraits) %>%
-    arrange(match(Species, LifeTraits)) %>%
-    mutate(
-      Group = ifelse(Species %in% G1, "G1", "G2"),
-      .after = Species
-    )
+process_aa_data <- function(OG.aa, LifeTraits, G1) {
+  OG.aa.tr <- OG.aa %>% data.table::transpose(keep.names = "ID", make.names = "Position") %>%
+    mutate(Species = ifelse(grepl("_", ID), sub("_.*", "", ID), ID), .after = ID) %>% 
+    filter(Species %in% LifeTraits) %>% 
+    arrange(match(Species, LifeTraits)) %>% 
+    mutate(Group= ifelse(Species %in% G1, 'G1', 'G2'), .after = Species) %>%
+    select(ID:Group, everything()) %>%
+    # Remove aa with 50% NA
+    select(-which(colMeans(. == "-") >= 0.5 & !(1:ncol(.) %in% 1:3))) %>%
+    # Remove columns with less than 2 different values (excluding specific strings)
+    select(where(~ {
+      # Get unique character values excluding "-", "*", and "."
+      unique_values <- unique(.)[!unique(.) %in% c("-", "*", ".")]
+      length(unique_values) >= 2  # Check for at least 2 different values
+    })) %>%
+    #Pivot longer
+    pivot_longer(cols = everything()[-(1:3)], names_to = "Pos", values_to = "AA") %>%
+    mutate(Pos = as.numeric(Pos)) %>% 
+    group_by(Group, Pos, AA) %>%
+    summarize(
+      Count = n(),  # Count of rows
+      Species = n_distinct(Species),  # Count of unique species
+      .groups = 'drop') %>% 
+    arrange(Pos, AA) %>% 
+    filter(!str_detect(AA, "[-*\\.]")) %>% 
+    mutate(Orthogroup=OGid, .after = Group)
   
-  if (nrow(OG.aa.long) == 0) {
-    return(data.frame(
-      Group = character(),
-      Orthogroup = character(),
-      Pos = numeric(),
-      AA = character(),
-      Count = integer(),
-      Species = integer()
-    ))
-  }
-  
-  # Filtrer les positions problématiques
-  position_stats <- OG.aa.long %>%
-    group_by(Position) %>%
-    summarise(
-      gap_frac = mean(AA == "-"),
-      unique_aa = n_distinct(AA[!AA %in% c("-", "*", ".")])
-    ) %>%
-    filter(gap_frac < 0.5, unique_aa >= 2)
-  
-  # Appliquer les filtres
-  OG.aa.filtered <- OG.aa.long %>%
-    filter(
-      Position %in% position_stats$Position,
-      !AA %in% c("-", "*", ".")
-    )
-  
-  # Résumer les résultats
-  result <- OG.aa.filtered %>%
-    group_by(Group, Position, AA) %>%
-    summarise(
-      Count = n(),
-      Species = n_distinct(Species),
-      .groups = "drop"
-    ) %>%
-    arrange(Position, AA) %>%
-    mutate(
-      Orthogroup = OGid,
-      .after = Group
-    ) %>%
-    rename(Pos = Position)
-  
-  return(result)
+  return(OG.aa.tr)
 }
+
 
 G2 = c("Acipenser_ruthenus",
        "Polyodon_spathula",
