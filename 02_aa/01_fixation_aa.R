@@ -323,8 +323,8 @@ dim(data)
 path <- "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/MultipleSequenceAlignments/"
 
 # Read the file
-aa_file <- paste0(path, OGid, "_amino_acid_positions.csv")
-OG.aa <- read.csv(aa_file)
+#aa_file <- paste0(path, OGid, "_amino_acid_positions.csv")
+#OG.aa <- read.csv(aa_file)
 
 
 ########################################################################################################
