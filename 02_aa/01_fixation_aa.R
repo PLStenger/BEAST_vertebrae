@@ -334,31 +334,53 @@ path <- "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/MultipleSequ
 # Initialize an empty list to store results
 results_list <- list()
 
-for (i in 1:length(data$Orthogroup)) {
-  # Define the Orthogroup to target
+for (i in seq_along(data$Orthogroup)) {
   OGid <- data$Orthogroup[i]
-  
-  # Read the file
   aa_file <- paste0(path, OGid, "_amino_acid_positions.csv")
   
-  # Check if the file exists before reading
   if (file.exists(aa_file)) {
-    # Use tryCatch to handle potential errors during processing
     result <- tryCatch({
-      # Read the amino acid data
       OG.aa <- read.csv(aa_file)
-      
-      # Process the amino acid data
-      process_aa_data(OG.aa, LifeTraits, G1)
+
+      # 1. Extraire l'espèce de chaque colonne (hors "Position")
+      extraire_espece <- function(nom_colonne) {
+        # Exemple: "Acanthochromis_polyacanthus_protein..."
+        # On prend les 2 premiers éléments séparés par "_"
+        paste(strsplit(nom_colonne, "_")[[1]][1:2], collapse = "_")
+      }
+      noms_colonnes <- colnames(OG.aa)
+      # On exclut "Position" si elle existe
+      if ("Position" %in% noms_colonnes) {
+        noms_colonnes <- setdiff(noms_colonnes, "Position")
+      }
+      especes_colonnes <- sapply(noms_colonnes, extraire_espece, USE.NAMES = FALSE)
+
+      # 2. Trouver les colonnes qui correspondent à G1
+      colonnes_a_garder <- which(especes_colonnes %in% G1)
+      # On garde aussi "Position" si elle existe
+      if ("Position" %in% colnames(OG.aa)) {
+        colonnes_a_garder <- c(which(colnames(OG.aa) == "Position"), colonnes_a_garder + 1)
+        colonnes_a_garder <- unique(colonnes_a_garder)
+      } else {
+        colonnes_a_garder <- colonnes_a_garder + 1
+      }
+      # On peut aussi simplement garder "Position" + les colonnes correspondantes
+      # (correction de l'indexation)
+      colonnes_a_garder <- c(which(colnames(OG.aa) == "Position"), 
+                             which(especes_colonnes %in% G1) + 1)
+      colonnes_a_garder <- unique(sort(colonnes_a_garder))
+
+      # 3. Filtrer OG.aa
+      OG.aa_filtre <- OG.aa[, colonnes_a_garder, drop = FALSE]
+
+      # 4. Appeler process_aa_data
+      process_aa_data(OG.aa_filtre, LifeTraits, G1)
     }, error = function(e) {
-      # Print the file name if an error occurs
       message(paste("Failed to process file:", aa_file))
-      return(NULL)  # Return NULL if processing fails
+      return(NULL)
     })
-    
-    # Only add the result to the list if it is not NULL
     if (!is.null(result)) {
-      results_list[[i - 0]] <- result  # Adjust index if needed
+      results_list[[i]] <- result
     }
   } else {
     warning(paste("File does not exist:", aa_file))
