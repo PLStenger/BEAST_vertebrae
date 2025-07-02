@@ -38,10 +38,11 @@ process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
   message("[", OGid, "] Après filtrage des colonnes peu informatives : ", ncol(OG.aa.tr), " colonnes")
 
   # Vérification avant pivot_longer
-  if (ncol(OG.aa.tr) <= 3) {
-    message("[", OGid, "] Aucune colonne à pivoter après filtrage.")
-    return(NULL)
-  }
+  message("[", OGid, "] Colonnes après filtrage : ", paste(colnames(OG.aa.tr), collapse=", "))
+ if (ncol(OG.aa.tr) <= 3) {
+  message("[", OGid, "] Trop peu de colonnes, mais je retourne quand même pour debug.")
+  return(OG.aa.tr)
+}
 
   # Pivot longer
   OG.aa.tr <- OG.aa.tr %>%
@@ -365,6 +366,9 @@ sink(log_con, type = "message")
 # Initialize an empty list to store results
 results_list <- list()
 
+print(dim(OG.aa_filtre))
+print(colnames(OG.aa_filtre))
+
 for (i in seq_along(data$Orthogroup)) {
   OGid <- data$Orthogroup[i]
   aa_file <- paste0(path, OGid, "_amino_acid_positions.csv")
@@ -405,7 +409,13 @@ for (i in seq_along(data$Orthogroup)) {
       OG.aa_filtre <- OG.aa[, colonnes_a_garder, drop = FALSE]
 
       # 4. Appeler process_aa_data
-      process_aa_data(OG.aa_filtre, LifeTraits, G1, OGid)
+      result <- process_aa_data(OG.aa_filtre, LifeTraits, G1, OGid)
+if (!is.null(result)) {
+  print(head(result))
+  results_list[[i]] <- result
+} else {
+  message("[", OGid, "] Aucun résultat pour cet orthogroupe.")
+}
     }, error = function(e) {
       message(paste("Failed to process file:", aa_file))
       return(NULL)
