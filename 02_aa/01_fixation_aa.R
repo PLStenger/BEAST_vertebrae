@@ -363,8 +363,8 @@ log_con <- file("erreurs_fixation_aa.log", open = "wt")
 sink(log_con, type = "message")
 results_list <- list()
 
-print(dim(OG.aa_filtre))
-print(colnames(OG.aa_filtre))
+#print(dim(OG.aa_filtre))
+#print(colnames(OG.aa_filtre))
 
 # ----------- TRAITEMENT PRINCIPAL -----------
 for (i in seq_along(data$Orthogroup)) {
