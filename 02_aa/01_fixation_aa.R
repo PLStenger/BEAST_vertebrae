@@ -407,7 +407,11 @@ for (i in seq_along(data$Orthogroup)) {
 
       # 3. Filtrer OG.aa
       OG.aa_filtre <- OG.aa[, colonnes_a_garder, drop = FALSE]
-
+      print(dim(OG.aa_filtre))
+      if (!file.exists(aa_file)) {
+  message("Fichier introuvable : ", aa_file)
+}
+      
       # 4. Appeler process_aa_data
       result <- process_aa_data(OG.aa_filtre, LifeTraits, G1, OGid)
 if (!is.null(result)) {
