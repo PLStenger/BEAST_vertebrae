@@ -6,9 +6,8 @@ library(stringr)
 
 save.image(file = "workspace_fixation_aa.RData")
 
-
+# ----------- FONCTION PRINCIPALE -----------
 process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
-  # Transposition et ajout de Species et Group
   OG.aa.tr <- OG.aa %>% 
     data.table::transpose(keep.names = "ID", make.names = "Position") %>%
     mutate(
@@ -25,7 +24,7 @@ process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
   
   message("[", OGid, "] Après transposition : ", ncol(OG.aa.tr), " colonnes")
 
-  # Suppression des colonnes avec trop de NA ou peu de valeurs
+  # Suppression des colonnes avec trop de '-' ou peu de valeurs informatives
   OG.aa.tr <- OG.aa.tr %>%
     select(-which(colMeans(. == "-") >= 0.5 & !(1:ncol(.) %in% 1:3)))
   message("[", OGid, "] Après filtrage des '-' : ", ncol(OG.aa.tr), " colonnes")
@@ -36,13 +35,12 @@ process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
       length(unique_values) >= 2
     }))
   message("[", OGid, "] Après filtrage des colonnes peu informatives : ", ncol(OG.aa.tr), " colonnes")
-
-  # Vérification avant pivot_longer
   message("[", OGid, "] Colonnes après filtrage : ", paste(colnames(OG.aa.tr), collapse=", "))
- if (ncol(OG.aa.tr) <= 3) {
-  message("[", OGid, "] Trop peu de colonnes, mais je retourne quand même pour debug.")
-  return(OG.aa.tr)
-}
+
+  if (ncol(OG.aa.tr) <= 3) {
+    message("[", OGid, "] Trop peu de colonnes, mais je retourne quand même pour debug.")
+    return(OG.aa.tr)
+  }
 
   # Pivot longer
   OG.aa.tr <- OG.aa.tr %>%
@@ -66,7 +64,7 @@ process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
   return(OG.aa.tr)
 }
 
-
+# ----------- PARAMÈTRES ET LISTES -----------
 G2 = c("Acipenser_ruthenus",
        "Polyodon_spathula",
        "Anabas_testudineus",
@@ -360,15 +358,15 @@ path <- "/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/99_raw_data/MultipleSequ
 # for whole dataset
 # Loop through each Orthogroup from 8001 to the end
 
+# ----------- INITIALISATION -----------
 log_con <- file("erreurs_fixation_aa.log", open = "wt")
 sink(log_con, type = "message")
-
-# Initialize an empty list to store results
 results_list <- list()
 
 print(dim(OG.aa_filtre))
 print(colnames(OG.aa_filtre))
 
+# ----------- TRAITEMENT PRINCIPAL -----------
 for (i in seq_along(data$Orthogroup)) {
   OGid <- data$Orthogroup[i]
   aa_file <- paste0(path, OGid, "_amino_acid_positions.csv")
@@ -376,52 +374,40 @@ for (i in seq_along(data$Orthogroup)) {
   if (file.exists(aa_file)) {
     result <- tryCatch({
       OG.aa <- read.csv(aa_file)
-
       # 1. Extraire l'espèce de chaque colonne (hors "Position")
       extraire_espece <- function(nom_colonne) {
-        # Exemple: "Acanthochromis_polyacanthus_protein..."
-        # On prend les 2 premiers éléments séparés par "_"
         paste(strsplit(nom_colonne, "_")[[1]][1:2], collapse = "_")
       }
       noms_colonnes <- colnames(OG.aa)
-      # On exclut "Position" si elle existe
       if ("Position" %in% noms_colonnes) {
         noms_colonnes <- setdiff(noms_colonnes, "Position")
       }
       especes_colonnes <- sapply(noms_colonnes, extraire_espece, USE.NAMES = FALSE)
-
-      # 2. Trouver les colonnes qui correspondent à G1
+      # 2. Colonnes à garder
       colonnes_a_garder <- which(especes_colonnes %in% G1)
-      # On garde aussi "Position" si elle existe
       if ("Position" %in% colnames(OG.aa)) {
         colonnes_a_garder <- c(which(colnames(OG.aa) == "Position"), colonnes_a_garder + 1)
         colonnes_a_garder <- unique(colonnes_a_garder)
       } else {
         colonnes_a_garder <- colonnes_a_garder + 1
       }
-      # On peut aussi simplement garder "Position" + les colonnes correspondantes
-      # (correction de l'indexation)
-      colonnes_a_garder <- c(which(colnames(OG.aa) == "Position"), 
-                             which(especes_colonnes %in% G1) + 1)
+      colonnes_a_garder <- c(which(colnames(OG.aa) == "Position"), which(especes_colonnes %in% G1) + 1)
       colonnes_a_garder <- unique(sort(colonnes_a_garder))
-
       # 3. Filtrer OG.aa
       OG.aa_filtre <- OG.aa[, colonnes_a_garder, drop = FALSE]
       print(dim(OG.aa_filtre))
-      if (!file.exists(aa_file)) {
-  message("Fichier introuvable : ", aa_file)
-}
-      
+      print(colnames(OG.aa_filtre))
       # 4. Appeler process_aa_data
       result <- process_aa_data(OG.aa_filtre, LifeTraits, G1, OGid)
-if (!is.null(result)) {
-  print(head(result))
-  results_list[[i]] <- result
-} else {
-  message("[", OGid, "] Aucun résultat pour cet orthogroupe.")
-}
+      if (!is.null(result)) {
+        print(head(result))
+        results_list[[i]] <- result
+      } else {
+        message("[", OGid, "] Aucun résultat pour cet orthogroupe.")
+      }
+      result
     }, error = function(e) {
-      message(paste("Failed to process file:", aa_file))
+      message(paste("Failed to process file:", aa_file, ":", e$message))
       return(NULL)
     })
     if (!is.null(result)) {
@@ -435,6 +421,7 @@ if (!is.null(result)) {
 sink(type = "message")
 close(log_con)
 
+# ----------- COMBINAISON ET ÉCRITURE -----------
 # Combine all results into a single data frame, filtering out NULLs
 final_results <- do.call(rbind, results_list)
 print(dim(final_results))
