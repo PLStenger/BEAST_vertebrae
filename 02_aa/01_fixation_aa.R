@@ -7,7 +7,7 @@ library(stringr)
 save.image(file = "workspace_fixation_aa.RData")
 
 
-process_aa_data <- function(OG.aa, LifeTraits, G1) {
+process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
   # Transposition et ajout de Species et Group
   OG.aa.tr <- OG.aa %>% 
     data.table::transpose(keep.names = "ID", make.names = "Position") %>%
@@ -22,18 +22,24 @@ process_aa_data <- function(OG.aa, LifeTraits, G1) {
       .after = Species
     ) %>%
     select(ID:Group, everything())
+  
+  message("[", OGid, "] Après transposition : ", ncol(OG.aa.tr), " colonnes")
 
   # Suppression des colonnes avec trop de NA ou peu de valeurs
   OG.aa.tr <- OG.aa.tr %>%
-    select(-which(colMeans(. == "-") >= 0.5 & !(1:ncol(.) %in% 1:3))) %>%
+    select(-which(colMeans(. == "-") >= 0.5 & !(1:ncol(.) %in% 1:3)))
+  message("[", OGid, "] Après filtrage des '-' : ", ncol(OG.aa.tr), " colonnes")
+  
+  OG.aa.tr <- OG.aa.tr %>%
     select(where(~ {
       unique_values <- unique(.)[!unique(.) %in% c("-", "*", ".")]
       length(unique_values) >= 2
     }))
+  message("[", OGid, "] Après filtrage des colonnes peu informatives : ", ncol(OG.aa.tr), " colonnes")
 
   # Vérification avant pivot_longer
   if (ncol(OG.aa.tr) <= 3) {
-    message("Aucune colonne à pivoter après filtrage pour ", OGid)
+    message("[", OGid, "] Aucune colonne à pivoter après filtrage.")
     return(NULL)
   }
 
@@ -55,6 +61,7 @@ process_aa_data <- function(OG.aa, LifeTraits, G1) {
     filter(!str_detect(AA, "[-*\\.]")) %>% 
     mutate(Orthogroup = OGid, .after = Group)
 
+  message("[", OGid, "] Résultat final : ", nrow(OG.aa.tr), " lignes.")
   return(OG.aa.tr)
 }
 
@@ -398,7 +405,7 @@ for (i in seq_along(data$Orthogroup)) {
       OG.aa_filtre <- OG.aa[, colonnes_a_garder, drop = FALSE]
 
       # 4. Appeler process_aa_data
-      process_aa_data(OG.aa_filtre, LifeTraits, G1)
+      process_aa_data(OG.aa_filtre, LifeTraits, G1, OGid)
     }, error = function(e) {
       message(paste("Failed to process file:", aa_file))
       return(NULL)
