@@ -11,7 +11,7 @@ process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
   OG.aa.tr <- OG.aa %>% 
     data.table::transpose(keep.names = "ID", make.names = "Position") %>%
     mutate(
-      Species = ifelse(grepl("_", ID), sub("_.*", "", ID), ID),
+      Species = sapply(ID, function(x) paste(strsplit(x, "_")[[1]][1:2], collapse = "_")),
       .after = ID
     ) %>% 
     filter(Species %in% LifeTraits) %>% 
