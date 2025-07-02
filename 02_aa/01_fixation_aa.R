@@ -23,6 +23,7 @@ process_aa_data <- function(OG.aa, LifeTraits, G1, OGid) {
     select(ID:Group, everything())
   
   message("[", OGid, "] Après transposition : ", ncol(OG.aa.tr), " colonnes")
+  message("[", OGid, "] Noms Species : ", paste(unique(OG.aa.tr$Species), collapse=", "))
 
   # Suppression des colonnes avec trop de '-' ou peu de valeurs informatives
   OG.aa.tr <- OG.aa.tr %>%
