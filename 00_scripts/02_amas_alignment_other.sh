@@ -33,7 +33,7 @@ ls *.fa | split -l 500 - batches_other/
 for batch in batches_other/*; do
     python3 -m amas.AMAS concat -i $(cat $batch) -f fasta -d aa -u fasta \
              -t "${batch}.fa" \
-             -p "${batch}_partitions_other.txt" \  # Fichier unique par lot
+             -p "${batch}_partitions_other.txt" \
              -c 8
 done
 
