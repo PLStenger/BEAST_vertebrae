@@ -26,14 +26,14 @@ cd /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/01_3350_OG
 
 # Méthode par lots car out of memory sinon
 # Création des lots
-mkdir -p batches
+mkdir -p batches_other
 ls *.fa | split -l 500 - batches_other/
 
 # Traitement par lot avec partitions uniques
-for batch in batches_other/*; do
-    python3 -m amas.AMAS concat -i $(cat $batch) -f fasta -d aa -u fasta \
-             -t "${batch}.fa" \
-             -p "${batch}_partitions_other.txt" \
+for batch_other in batches_other/*; do
+    python3 -m amas.AMAS concat -i $(cat $batch_other) -f fasta -d aa -u fasta \
+             -t "${batch_other}.fa" \
+             -p "${batch_other}_partitions_other.txt" \
              -c 8
 done
 
