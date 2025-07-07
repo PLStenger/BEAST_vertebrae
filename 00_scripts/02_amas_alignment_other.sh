@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=02_amas_alignment_other
-#SBATCH --time=96:00:00       
+##SBATCH --time=96:00:00       
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8     
 #SBATCH -p gdec
