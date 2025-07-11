@@ -4,12 +4,15 @@
 ##SBATCH --time=96:00:00       
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8     
-#SBATCH -p long
-#SBATCH --mem=92G            
+#SBATCH -p gdec
+#SBATCH --mem=500G            
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
 #SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_other.err"
 #SBATCH --output="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/00_scripts/02_amas_alignment_other.out"
+
+# long -> 92Go seulement
+# SMP avec 750 Go plus de probleme de memoire, mais de temps -> out of time au bout de 3 jours
 
 # BEAST attend un seul alignement, c’est-à-dire que toutes les séquences doivent être alignées les unes par rapport aux autres (mêmes espèces, mêmes positions).
 # Concaténer les alignements revient à créer une supermatrice : pour chaque espèce, tu concatènes ses séquences alignées pour chaque OG, en respectant l’ordre des OG.
