@@ -4,7 +4,7 @@
 ##SBATCH --time=96:00:00       
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8     
-#SBATCH -p gdec
+#SBATCH -p long
 #SBATCH --mem=750G            
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
