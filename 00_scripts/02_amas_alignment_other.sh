@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=02_amas_alignment_other
-##SBATCH --time=96:00:00       
+#SBATCH --time=10-00:00:00      
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8     
 #SBATCH -p gdec
@@ -33,12 +33,22 @@ mkdir -p batches_other
 ls *.fa | split -l 500 - batches_other/
 
 # Traitement par lot avec partitions uniques
+#for batch_other in batches_other/*; do
+#    python3 -m amas.AMAS concat -i $(cat $batch_other) -f fasta -d aa -u fasta \
+#             -t "${batch_other}.fa" \
+#             -p "${batch_other}_partitions_other.txt" \
+#             -c 8
+#done
+
 for batch_other in batches_other/*; do
     python3 -m amas.AMAS concat -i $(cat $batch_other) -f fasta -d aa -u fasta \
              -t "${batch_other}.fa" \
              -p "${batch_other}_partitions_other.txt" \
-             -c 8
+             -c 8 &
+    # Limite à N taches en parallèle (optionnel avec Parallel)
+    [[ $(jobs -r -p | wc -l) -ge 8 ]] && wait -n
 done
+wait
 
 # Fusion finale sans charge mémoire
 cat batches_other/*.fa > concatenated_alignment.fa
