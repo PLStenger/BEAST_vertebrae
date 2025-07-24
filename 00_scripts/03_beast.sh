@@ -19,4 +19,4 @@ module load conda/4.12.0
 source ~/.bashrc
 conda activate beast
 
-beast test2.xml
+beast test3.xml
