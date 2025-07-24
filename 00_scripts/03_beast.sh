@@ -10,6 +10,8 @@
 
 KR_DIR="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/03_beast"
 
+cd $KR_DIR
+
 module load java/oracle-1.8.0_45
 module load BEAST/2.5.2
 
