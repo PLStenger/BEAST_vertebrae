@@ -15,4 +15,4 @@ done
 export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
 export JAVA_OPTS="-Djava.library.path=$HOME/lib"
 
-beast -beagle Murat_acronyms.xml
+beast -beagle Test_01.xml
