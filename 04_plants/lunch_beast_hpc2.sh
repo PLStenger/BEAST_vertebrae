@@ -18,7 +18,7 @@
 # cd beast/bin
 # Puis pour lancer beast: ./beast/bin/beast
 
-WORKING_DIRECTORY=/scratch_vol0/04_plants/beast/bin
+WORKING_DIRECTORY=/home/cehuneau/BEAST_vertebrae/04_plants/beast/bin
 
 # S'il y a des conflits avec d'autres version Beagle:
 # Masquer les anciennes libs conda BEAGLE
@@ -33,4 +33,4 @@ export JAVA_OPTS="-Djava.library.path=$HOME/lib"
 
 cd $WORKING_DIRECTORY
 
-./beast Murat_parameters_cleaned.xml
+./beast /home/cehuneau/BEAST_vertebrae/04_plants/Murat_parameters_cleaned.xml
