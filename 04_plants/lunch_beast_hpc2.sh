@@ -18,6 +18,7 @@
 # cd beast/bin
 # Puis pour lancer beast: ./beast/bin/beast
 
+module load conda/4.12.0
 source ~/.bashrc
 source activate beast
 
