@@ -28,8 +28,8 @@ WORKING_DIRECTORY=/home/cehuneau/BEAST_vertebrae/04_plants/beast/bin
 #  fi
 #done
 
-#export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
-#export JAVA_OPTS="-Djava.library.path=$HOME/lib"
+export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
+export JAVA_OPTS="-Djava.library.path=$HOME/lib"
 
 cd $WORKING_DIRECTORY
 
