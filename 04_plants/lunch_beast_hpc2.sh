@@ -32,8 +32,8 @@ for f in libhmsbeagle.so libhmsbeagle.so.1 libhmsbeagle-jni.so libhmsbeagle-cpu-
   fi
 done
 
-export LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH
-export JAVA_OPTS="-Djava.library.path=$HOME/lib"
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+export JAVA_OPTS="-Djava.library.path=$CONDA_PREFIX/lib"
 
 cd $WORKING_DIRECTORY
 
