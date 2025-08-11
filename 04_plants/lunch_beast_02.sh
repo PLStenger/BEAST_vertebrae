@@ -16,4 +16,4 @@ export JAVA_OPTS="-Djava.library.path=$HOME/lib"
 #beast -beagle Test_01.xml
 cd /scratch_vol0/fungi/BEAST_vertebrae/04_plants/beast/bin
 
-./beast /scratch_vol0/fungi/BEAST_vertebrae/04_plants/Murat_WAG_six_fossils.xml
+./beast /scratch_vol0/fungi/BEAST_vertebrae/04_plants/Murat_parameters_cleaned_02.xml
