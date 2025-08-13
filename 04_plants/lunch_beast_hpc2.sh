@@ -1,13 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=lunch_beast_hpc2
 #SBATCH --ntasks=1
-#SBATCH -p smp
-#SBATCH --mem=1000G
+#SBATCH -p gdec
+#SBATCH --time=10-00:00:00
+#SBATCH --mem=500G
 #SBATCH --cpus-per-task=8
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
-#SBATCH --error="/home/cehuneau/BEAST_vertebrae/04_plants/lunch_beast_hpc2.err"
-#SBATCH --output="/home/cehuneau/BEAST_vertebrae/04_plants/lunch_beast_hpc2.out"
+#SBATCH --error="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/lunch_beast_hpc2.err"
+#SBATCH --output="/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/lunch_beast_hpc2.out"
 
 # Pour télécharger la bonne version de Beast (2.7.8) (il est important de ne pas prendre une autre version pour éviter les conflits):
 # https://www.beast2.org
@@ -20,9 +21,11 @@
 
 module load conda/4.12.0
 source ~/.bashrc
-source activate beast
+#source activate beast
+module load java/oracle-1.8.0_45
+module load BEAST/2.5.2
 
-WORKING_DIRECTORY=/home/cehuneau/BEAST_vertebrae/04_plants/beast/bin
+WORKING_DIRECTORY=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/beast/bin
 
 # S'il y a des conflits avec d'autres version Beagle:
 # Masquer les anciennes libs conda BEAGLE
@@ -37,4 +40,5 @@ export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
 cd $WORKING_DIRECTORY
 
-./beast /home/cehuneau/BEAST_vertebrae/04_plants/Murat_parameters_cleaned.xml
+#./beast /home/cehuneau/BEAST_vertebrae/04_plants/Murat_parameters_cleaned.xml
+beast /home/cehuneau/BEAST_vertebrae/04_plants/Murat_parameters_cleaned_calibrated.xml
