@@ -29,16 +29,16 @@ WORKING_DIRECTORY=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/beast
 
 # S'il y a des conflits avec d'autres version Beagle:
 # Masquer les anciennes libs conda BEAGLE
-for f in libhmsbeagle.so libhmsbeagle.so.1 libhmsbeagle-jni.so libhmsbeagle-cpu-sse.so libhmsbeagle-cpu.so libhmsbeagle-cpu-sse.so.31.0.0 libhmsbeagle-cpu.so.31.0.0 libhmsbeagle.so.1.3.2; do
-  if [ -f "$CONDA_PREFIX/lib/$f" ]; then
-    mv "$CONDA_PREFIX/lib/$f" "$CONDA_PREFIX/lib/$f.bak"
-  fi
-done
+#for f in libhmsbeagle.so libhmsbeagle.so.1 libhmsbeagle-jni.so libhmsbeagle-cpu-sse.so libhmsbeagle-cpu.so libhmsbeagle-cpu-sse.so.31.0.0 libhmsbeagle-cpu.so.31.0.0 libhmsbeagle.so.1.3.2; do
+#  if [ -f "$CONDA_PREFIX/lib/$f" ]; then
+#    mv "$CONDA_PREFIX/lib/$f" "$CONDA_PREFIX/lib/$f.bak"
+#  fi
+#done
 
-export JAVA_TOOL_OPTIONS="-Djava.library.path=$CONDA_PREFIX/lib"
-export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+#export JAVA_TOOL_OPTIONS="-Djava.library.path=$CONDA_PREFIX/lib"
+#export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
 cd $WORKING_DIRECTORY
 
-#./beast /home/cehuneau/BEAST_vertebrae/04_plants/Murat_parameters_cleaned.xml
-beast /home/cehuneau/BEAST_vertebrae/04_plants/Murat_parameters_cleaned_calibrated.xml
+#./beast /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/Murat_parameters_cleaned.xml
+beast /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/Murat_parameters_cleaned_calibrated.xml
