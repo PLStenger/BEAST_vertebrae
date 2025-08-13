@@ -23,7 +23,9 @@ module load conda/4.12.0
 source ~/.bashrc
 #source activate beast
 module load java/oracle-1.8.0_45
-module load BEAST/2.5.2
+#module load BEAST/2.5.2
+module load gcc/8.1.0
+module load beagle/3.1.2
 
 WORKING_DIRECTORY=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/beast/bin
 
