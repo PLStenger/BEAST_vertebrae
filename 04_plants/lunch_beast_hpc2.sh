@@ -42,5 +42,4 @@ WORKING_DIRECTORY=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/beast
 
 cd $WORKING_DIRECTORY
 
-./beast /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/Murat_parameters_cleaned_calibrated.xml
-#beast /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/Murat_parameters_cleaned_calibrated.xml
+./beast /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/Murat_parameters_cleaned_calibrated_all_prior.xml
