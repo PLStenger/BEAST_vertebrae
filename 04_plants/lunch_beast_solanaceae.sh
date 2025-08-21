@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=lunch_beast_solanaceae
 #SBATCH --ntasks=1
-#SBATCH -p gdec
+#SBATCH -p long
 #SBATCH --time=10-00:00:00
-#SBATCH --mem=500G
+#SBATCH --mem=90G
 #SBATCH --cpus-per-task=8
 #SBATCH --mail-user=pierrelouis.stenger@gmail.com
 #SBATCH --mail-type=ALL 
