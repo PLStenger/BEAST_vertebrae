@@ -42,4 +42,4 @@ WORKING_DIRECTORY=/home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/beast
 
 cd $WORKING_DIRECTORY
 
-./beast /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/gymno.xml
+./beast /home/plstenge/BEAST_vertebrae/BEAST_vertebrae/04_plants/Gymno.xml
